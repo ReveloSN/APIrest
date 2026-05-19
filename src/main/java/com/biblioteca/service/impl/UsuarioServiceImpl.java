@@ -2,6 +2,7 @@ package com.biblioteca.service.impl;
 
 import com.biblioteca.dto.UsuarioRequest;
 import com.biblioteca.dto.UsuarioResponse;
+import com.biblioteca.exception.BusinessRuleException;
 import com.biblioteca.exception.ResourceNotFoundException;
 import com.biblioteca.model.Bibliotecario;
 import com.biblioteca.model.Estudiante;
@@ -107,6 +108,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     private String normalizeTipo(String tipoUsuario) {
-        return tipoUsuario == null ? "USUARIO" : tipoUsuario.trim().toUpperCase(Locale.ROOT);
+        String tipo = tipoUsuario == null ? "" : tipoUsuario.trim().toUpperCase(Locale.ROOT);
+        return switch (tipo) {
+            case "ESTUDIANTE", "PROFESOR", "BIBLIOTECARIO" -> tipo;
+            default -> throw new BusinessRuleException("Tipo de usuario no permitido: " + tipoUsuario);
+        };
     }
 }
