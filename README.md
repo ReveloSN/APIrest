@@ -71,9 +71,19 @@ Si Maven no esta en el PATH, en IntelliJ puedes ejecutar `BibliotecaApiApplicati
 - `POST /api/prestamos`
 - `GET /api/prestamos`
 - `GET /api/prestamos/{id}`
+- `GET /api/prestamos/usuario/{usuarioId}`
+- `GET /api/prestamos/ejemplar/{ejemplarId}`
 - `PATCH /api/prestamos/{id}/devolucion`
 
 Al crear un prestamo, el servicio valida que el usuario exista y que el ejemplar este en estado `DISPONIBLE`. Al registrar devolucion, el prestamo pasa a `DEVUELTO` y el ejemplar vuelve a `DISPONIBLE`.
+
+La respuesta de prestamos incluye `diasMora` y `mora`. La mora se calcula a razon de `1000` por cada dia despues de `fechaDevolucionEsperada`.
+
+Los tipos de usuario permitidos son:
+
+- `ESTUDIANTE`
+- `PROFESOR`
+- `BIBLIOTECARIO`
 
 ## Ejemplo rapido
 
@@ -109,3 +119,13 @@ Crear prestamo:
   "fechaDevolucionEsperada": "2026-06-02"
 }
 ```
+
+## Postman
+
+La coleccion esta en:
+
+```text
+docs/postman/Biblioteca_API.postman_collection.json
+```
+
+Importala en Postman y ejecuta en este orden: crear libro, crear usuario, crear ejemplar, crear prestamo, registrar devolucion. La coleccion guarda automaticamente los IDs generados.
