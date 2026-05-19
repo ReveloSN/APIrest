@@ -13,6 +13,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -115,6 +116,65 @@ class PrestamoServiceImplTest {
 
         assertThat(response.getEstado()).isEqualTo("DEVUELTO");
         assertThat(response.getFechaDevolucionReal()).isEqualTo(LocalDate.of(2026, 5, 19));
+        assertThat(response.getDiasMora()).isEqualTo(4);
+        assertThat(response.getMora()).isEqualTo(4000.0);
         verify(ejemplarRepository).save(argThat(saved -> "DISPONIBLE".equals(saved.getEstado())));
+    }
+
+    @Test
+    void consultarPrestamoActivoCalculaMoraConLaFechaActual() {
+        Prestamo prestamo = new Prestamo(
+                "prestamo-1",
+                "usuario-1",
+                "ejemplar-1",
+                LocalDate.of(2026, 5, 1),
+                LocalDate.of(2026, 5, 10),
+                null,
+                "ACTIVO"
+        );
+        when(prestamoRepository.findById("prestamo-1")).thenReturn(Optional.of(prestamo));
+
+        PrestamoResponse response = service.consultarPrestamo("prestamo-1");
+
+        assertThat(response.getDiasMora()).isEqualTo(9);
+        assertThat(response.getMora()).isEqualTo(9000.0);
+    }
+
+    @Test
+    void listarPrestamosPorUsuarioUsaElRepositorio() {
+        Prestamo prestamo = new Prestamo(
+                "prestamo-1",
+                "usuario-1",
+                "ejemplar-1",
+                LocalDate.of(2026, 5, 1),
+                LocalDate.of(2026, 5, 10),
+                null,
+                "ACTIVO"
+        );
+        when(prestamoRepository.findByUsuarioId("usuario-1")).thenReturn(List.of(prestamo));
+
+        List<PrestamoResponse> response = service.listarPrestamosPorUsuario("usuario-1");
+
+        assertThat(response).hasSize(1);
+        assertThat(response.getFirst().getUsuarioId()).isEqualTo("usuario-1");
+    }
+
+    @Test
+    void listarPrestamosPorEjemplarUsaElRepositorio() {
+        Prestamo prestamo = new Prestamo(
+                "prestamo-1",
+                "usuario-1",
+                "ejemplar-1",
+                LocalDate.of(2026, 5, 1),
+                LocalDate.of(2026, 5, 10),
+                null,
+                "ACTIVO"
+        );
+        when(prestamoRepository.findByEjemplarId("ejemplar-1")).thenReturn(List.of(prestamo));
+
+        List<PrestamoResponse> response = service.listarPrestamosPorEjemplar("ejemplar-1");
+
+        assertThat(response).hasSize(1);
+        assertThat(response.getFirst().getEjemplarId()).isEqualTo("ejemplar-1");
     }
 }
