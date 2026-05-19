@@ -11,6 +11,8 @@ public class PrestamoResponse {
     private LocalDate fechaDevolucionEsperada;
     private LocalDate fechaDevolucionReal;
     private String estado;
+    private int diasMora;
+    private double mora;
 
     public PrestamoResponse() {
     }
@@ -22,7 +24,9 @@ public class PrestamoResponse {
             LocalDate fechaPrestamo,
             LocalDate fechaDevolucionEsperada,
             LocalDate fechaDevolucionReal,
-            String estado
+            String estado,
+            int diasMora,
+            double mora
     ) {
         this.id = id;
         this.usuarioId = usuarioId;
@@ -31,6 +35,20 @@ public class PrestamoResponse {
         this.fechaDevolucionEsperada = fechaDevolucionEsperada;
         this.fechaDevolucionReal = fechaDevolucionReal;
         this.estado = estado;
+        this.diasMora = diasMora;
+        this.mora = mora;
+    }
+
+    public PrestamoResponse(
+            String id,
+            String usuarioId,
+            String ejemplarId,
+            LocalDate fechaPrestamo,
+            LocalDate fechaDevolucionEsperada,
+            LocalDate fechaDevolucionReal,
+            String estado
+    ) {
+        this(id, usuarioId, ejemplarId, fechaPrestamo, fechaDevolucionEsperada, fechaDevolucionReal, estado, 0, 0.0);
     }
 
     public String getId() {
@@ -87,5 +105,21 @@ public class PrestamoResponse {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public int getDiasMora() {
+        return diasMora;
+    }
+
+    public void setDiasMora(int diasMora) {
+        this.diasMora = diasMora;
+    }
+
+    public double getMora() {
+        return mora;
+    }
+
+    public void setMora(double mora) {
+        this.mora = mora;
     }
 }

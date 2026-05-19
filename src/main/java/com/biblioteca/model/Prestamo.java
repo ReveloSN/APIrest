@@ -1,6 +1,7 @@
 package com.biblioteca.model;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -91,5 +92,19 @@ public class Prestamo {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public int calcularDiasMora(LocalDate fechaReferencia) {
+        if (fechaDevolucionEsperada == null || fechaReferencia == null) {
+            return 0;
+        }
+        if (!fechaReferencia.isAfter(fechaDevolucionEsperada)) {
+            return 0;
+        }
+        return (int) ChronoUnit.DAYS.between(fechaDevolucionEsperada, fechaReferencia);
+    }
+
+    public double calcularMora(LocalDate fechaReferencia) {
+        return calcularDiasMora(fechaReferencia) * 1000.0;
     }
 }

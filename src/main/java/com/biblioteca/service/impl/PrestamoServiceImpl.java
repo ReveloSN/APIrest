@@ -84,6 +84,16 @@ public class PrestamoServiceImpl implements PrestamoService {
     }
 
     @Override
+    public List<PrestamoResponse> listarPrestamosPorUsuario(String usuarioId) {
+        return prestamoRepository.findByUsuarioId(usuarioId).stream().map(this::toResponse).toList();
+    }
+
+    @Override
+    public List<PrestamoResponse> listarPrestamosPorEjemplar(String ejemplarId) {
+        return prestamoRepository.findByEjemplarId(ejemplarId).stream().map(this::toResponse).toList();
+    }
+
+    @Override
     public PrestamoResponse consultarPrestamo(String id) {
         return toResponse(findPrestamo(id));
     }
@@ -121,6 +131,9 @@ public class PrestamoServiceImpl implements PrestamoService {
     }
 
     private PrestamoResponse toResponse(Prestamo prestamo) {
+        LocalDate fechaReferencia = prestamo.getFechaDevolucionReal() == null
+                ? LocalDate.now(clock)
+                : prestamo.getFechaDevolucionReal();
         return new PrestamoResponse(
                 prestamo.getId(),
                 prestamo.getUsuarioId(),
@@ -128,7 +141,9 @@ public class PrestamoServiceImpl implements PrestamoService {
                 prestamo.getFechaPrestamo(),
                 prestamo.getFechaDevolucionEsperada(),
                 prestamo.getFechaDevolucionReal(),
-                prestamo.getEstado()
+                prestamo.getEstado(),
+                prestamo.calcularDiasMora(fechaReferencia),
+                prestamo.calcularMora(fechaReferencia)
         );
     }
 }
