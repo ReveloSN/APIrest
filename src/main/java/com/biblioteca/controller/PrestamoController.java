@@ -35,6 +35,16 @@ public class PrestamoController {
         return ResponseEntity.ok(prestamoService.listarPrestamos());
     }
 
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<PrestamoResponse>> listarPrestamosPorUsuario(@PathVariable String usuarioId) {
+        return ResponseEntity.ok(prestamoService.listarPrestamosPorUsuario(usuarioId));
+    }
+
+    @GetMapping("/ejemplar/{ejemplarId}")
+    public ResponseEntity<List<PrestamoResponse>> listarPrestamosPorEjemplar(@PathVariable String ejemplarId) {
+        return ResponseEntity.ok(prestamoService.listarPrestamosPorEjemplar(ejemplarId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PrestamoResponse> consultarPrestamo(@PathVariable String id) {
         return ResponseEntity.ok(prestamoService.consultarPrestamo(id));
